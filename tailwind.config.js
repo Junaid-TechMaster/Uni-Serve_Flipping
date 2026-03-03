@@ -18,6 +18,15 @@ export default {
           900: '#7c2d12',
         },
       },
+      fontFamily: {
+        // Adds the Noto Sans Arabic font to Tailwind's default sans stack
+        sans: [
+          'ui-sans-serif', 
+          'system-ui', 
+          'sans-serif', 
+          '"Noto Sans Arabic"' // ✅ Added for seamless Urdu/Arabic text rendering
+        ],
+      },
     },
   },
   plugins: [],

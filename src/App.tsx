@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { CartProvider } from './context/CartContext';
+import { LanguageProvider } from './context/LanguageContext'; // ✅ Import LanguageProvider
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -12,6 +13,9 @@ import PageTransition from './components/PageTransition';
 
 function App() {
   const [currentPage, setCurrentPage] = useState('home');
+
+  // ✅ Language state and RTL useEffect have been removed! 
+  // The LanguageProvider now handles all of that automatically.
 
   const renderPage = () => {
     switch (currentPage) {
@@ -28,7 +32,7 @@ function App() {
       case 'checkout':
         return <Checkout onNavigate={handleNavigate}  />;
       default:
-        return <Home />;
+        return <Home onNavigate={handleNavigate} />;
     }
   };
 
@@ -38,20 +42,25 @@ function App() {
   };
 
   return (
-    <CartProvider>
-      {/* ✅ GLOBAL THEME + TEXT COLORS */}
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-        <Navbar currentPage={currentPage} onNavigate={handleNavigate} />
+    <LanguageProvider> {/* ✅ Wrap everything inside LanguageProvider */}
+      <CartProvider>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+          <Navbar 
+            currentPage={currentPage} 
+            onNavigate={handleNavigate} 
+            // ✅ Removed currentLanguage and onLanguageChange props
+          />
 
-        <main className="pt-0">
-          <PageTransition pageKey={currentPage}>
-            {renderPage()}
-          </PageTransition>
-        </main>
+          <main className="pt-0">
+            <PageTransition pageKey={currentPage}>
+              {renderPage()}
+            </PageTransition>
+          </main>
 
-        <Footer onNavigate={handleNavigate} />
-      </div>
-    </CartProvider>
+          <Footer onNavigate={handleNavigate} />
+        </div>
+      </CartProvider>
+    </LanguageProvider>
   );
 }
 

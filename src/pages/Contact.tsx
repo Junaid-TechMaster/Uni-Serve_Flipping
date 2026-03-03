@@ -1,5 +1,9 @@
-import { MapPin, Phone, Mail, MessageCircle, Send } from 'lucide-react';
+import { MapPin, Phone, Mail, MessageCircle, Send, Globe } from 'lucide-react';
 import { useState } from 'react';
+
+// ✅ Added Language Imports
+import { useLanguage } from '../context/LanguageContext';
+import { translations } from '../utils/translations';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -9,22 +13,28 @@ export default function Contact() {
     message: '',
   });
 
+  // ✅ Get the current language
+  const { language } = useLanguage();
+  const t = translations[language as keyof typeof translations] || translations.en;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Thank you for your message! We will get back to you soon.');
+    // ✅ Translate the success alert message
+    alert(t.contact?.alertSuccess || 'Thank you for your message! Our global support team will get back to you soon.');
     setFormData({ name: '', email: '', subject: '', message: '' });
   };
 
   const handleWhatsApp = () => {
+    // ✅ Translate the default WhatsApp message
+    const waMessage = encodeURIComponent(t.contact?.waDefaultMsg || 'Hello Uniserve University, I would like to know more about your courses.');
     window.open(
-      'https://wa.me/15551234567?text=Hello, I would like to know more about your courses',
+      `https://wa.me/923115693431?text=${waMessage}`,
       '_blank'
     );
   };
 
   return (
     <div className="pt-28">
-
       {/* Page Hero */}
       <section className="relative h-[360px] sm:h-[420px] overflow-hidden">
         <div
@@ -41,10 +51,10 @@ export default function Contact() {
           <div className="max-w-7xl mx-auto px-6 w-full">
             <div className="max-w-2xl text-white animate-fadeIn">
               <h1 className="text-4xl sm:text-5xl font-bold mb-4">
-                Get In Touch
+                {t.contact?.heroTitle || "Global Support"}
               </h1>
-              <p className="text-lg text-gray-200">
-                Have questions? We're here to help you start your property flipping journey
+              <p className="text-lg text-gray-200 italic">
+                {t.contact?.heroSub || "Uniserve University: Connecting students from Pakistan, USA, UK, and UAE to world-class expertise."}
               </p>
             </div>
           </div>
@@ -55,185 +65,115 @@ export default function Contact() {
       <section className="py-28 bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid gap-16 md:grid-cols-2">
-
-            {/* Contact Info */}
+            
+            {/* Contact Info Cards with 3D Depth */}
             <div className="animate-fadeIn">
               <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-                Contact Information
+                {t.contact?.reachUs || "Reach Our Experts"}
               </h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-10">
-                Reach out to us through any of the following channels. We're available to
-                answer your questions and provide guidance on choosing the right course for
-                you.
+              <p className="text-gray-600 dark:text-gray-400 mb-10 leading-relaxed">
+                {t.contact?.reachDesc || "Whether you are a beginner or a professional, our team is here to guide your transition from the University to the Flipping platform."}
               </p>
 
-              <div className="space-y-8 mb-10">
+              <div className="grid sm:grid-cols-2 gap-6 mb-10">
                 {[
-                  {
-                    icon: MapPin,
-                    title: 'Address',
-                    value: 'UAE, Media Center Plaza',
-                    color: 'bg-brand-100 text-brand-600',
-                  },
-                  {
-                    icon: Phone,
-                    title: 'Phone',
-                    value: '+92 311 5693431',
-                    sub: 'Mon–Fri 9:00 AM – 6:00 PM EST',
-                    color: 'bg-green-100 text-green-600',
-                  },
-                  {
-                    icon: Mail,
-                    title: 'Email',
-                    value: 'uniserveuniversity@gmail.com',
-                    sub: "We'll respond within 24 hours",
-                    color: 'bg-red-100 text-red-600',
-                  },
+                  { icon: Globe, title: t.contact?.box1Title || 'Global Reach', value: t.contact?.box1Value || 'PK, USA, UK, UAE', color: 'bg-blue-100 text-blue-600' },
+                  { icon: Phone, title: t.contact?.box2Title || 'WhatsApp/Call', value: '+92 311 5693431', color: 'bg-green-100 text-green-600' },
+                  { icon: Mail, title: t.contact?.box3Title || 'Official Email', value: 'uniserveuniversity@gmail.com', color: 'bg-red-100 text-red-600' },
+                  { icon: MapPin, title: t.contact?.box4Title || 'HQ Address', value: t.contact?.box4Value || 'UAE, Media Center Plaza', color: 'bg-brand-100 text-brand-600' },
                 ].map((item, index) => (
-                  <div
-                    key={item.title}
-                    style={{ animationDelay: `${index * 120}ms` }}
-                    className="flex items-start animate-fadeIn"
-                  >
-                    <div className={`rounded-full p-3 mr-4 ${item.color}`}>
+                  <div key={item.title} className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-800 transform transition-all hover:-translate-y-2 hover:shadow-xl">
+                    <div className={`rounded-xl p-3 w-fit mb-4 ${item.color}`}>
                       <item.icon className="h-6 w-6" />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                        {item.title}
-                      </h3>
-                      <p className="text-gray-600 dark:text-gray-400">
-                        {item.value}
-                      </p>
-                      {item.sub && (
-                        <p className="text-sm text-gray-500 dark:text-gray-500">
-                          {item.sub}
-                        </p>
-                      )}
-                    </div>
+                    <h3 className="font-bold text-sm text-gray-900 dark:text-white mb-1">{item.title}</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400" dir={item.icon === Phone ? 'ltr' : 'auto'}>{item.value}</p>
                   </div>
                 ))}
-
-                {/* WhatsApp */}
-                <div className="flex items-start animate-fadeIn">
-                  <div className="bg-green-100 rounded-full p-3 mr-4">
-                    <MessageCircle className="h-6 w-6 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                      WhatsApp
-                    </h3>
-                    <button
-                      onClick={handleWhatsApp}
-                      className="text-brand-600 hover:text-brand-700 font-medium transition-colors"
-                    >
-                      Chat with us on WhatsApp
-                    </button>
-                    <p className="text-sm text-gray-500 dark:text-gray-500">
-                      Quick responses during business hours
-                    </p>
-                  </div>
-                </div>
               </div>
 
-              {/* Office Hours */}
-              <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-800/60 rounded-2xl shadow-lg p-8 transition-all hover:shadow-2xl">
-                <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">
-                  Office Hours
+              <div className="bg-brand-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden group">
+                <MessageCircle className="absolute -right-4 -bottom-4 rtl:-left-4 rtl:-right-auto h-32 w-32 text-white/10 transform rotate-12 transition-transform group-hover:scale-110" />
+                <h3 className="text-xl font-bold mb-2">
+                  {t.contact?.quickAnswerTitle || "Need a Quick Answer?"}
                 </h3>
-                <div className="space-y-3 text-gray-600 dark:text-gray-400 text-sm">
-                  <p className="flex justify-between">
-                    <span>Monday – Friday:</span>
-                    <span className="font-medium">9:00 AM – 6:00 PM</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span>Saturday:</span>
-                    <span className="font-medium">10:00 AM – 4:00 PM</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span>Sunday:</span>
-                    <span className="font-medium">Closed</span>
-                  </p>
-                </div>
+                <p className="text-brand-100 text-sm mb-6">
+                  {t.contact?.quickAnswerDesc || "Join our international student community on WhatsApp for real-time guidance."}
+                </p>
+                <button onClick={handleWhatsApp} className="bg-white text-brand-600 px-6 py-3 rounded-xl font-bold text-sm hover:bg-brand-50 transition-colors">
+                  {t.contact?.openWa || "Open WhatsApp Chat"}
+                </button>
               </div>
             </div>
 
-            {/* Contact Form */}
+            {/* Contact Form with Depth */}
             <div className="animate-fadeIn">
-              <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-800/60 rounded-2xl shadow-lg p-10 transition-all hover:shadow-2xl">
+              <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-10 border border-gray-100 dark:border-gray-800">
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-8">
-                  Send Us a Message
+                  {t.contact?.formTitle || "Consult Our Admissions"}
                 </h2>
-
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  {[
-                    { label: 'Your Name', value: 'name', type: 'text', placeholder: 'Enter Your Name' },
-                    { label: 'Email Address', value: 'email', type: 'email', placeholder: 'john@example.com' },
-                    { label: 'Subject', value: 'subject', type: 'text', placeholder: 'Course Inquiry' },
-                  ].map((field) => (
-                    <div key={field.value}>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                        {field.label}
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase mb-2">
+                        {t.contact?.fName || "Name"}
                       </label>
-                      <input
-                        type={field.type}
-                        required
-                        value={(formData as any)[field.value]}
-                        onChange={(e) =>
-                          setFormData({ ...formData, [field.value]: e.target.value })
-                        }
-                        className="
-                          w-full px-4 py-3 rounded-lg
-                          bg-white dark:bg-gray-950
-                          border border-gray-300 dark:border-gray-700
-                          text-gray-900 dark:text-gray-100
-                          focus:ring-2 focus:ring-brand-500 focus:outline-none
-                          transition-colors
-                        "
-                        placeholder={field.placeholder}
+                      <input 
+                        type="text" 
+                        required 
+                        value={formData.name} 
+                        onChange={(e) => setFormData({...formData, name: e.target.value})} 
+                        className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-brand-500 text-sm" 
+                        placeholder={t.contact?.pName || "Full Name"} 
                       />
                     </div>
-                  ))}
-
+                    <div>
+                      <label className="block text-xs font-bold text-gray-400 uppercase mb-2">
+                        {t.contact?.fEmail || "Email"}
+                      </label>
+                      <input 
+                        type="email" 
+                        required 
+                        value={formData.email} 
+                        onChange={(e) => setFormData({...formData, email: e.target.value})} 
+                        className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-brand-500 text-sm" 
+                        placeholder="email@example.com" 
+                      />
+                    </div>
+                  </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Message
+                    <label className="block text-xs font-bold text-gray-400 uppercase mb-2">
+                      {t.contact?.fSubject || "Subject"}
                     </label>
-                    <textarea
-                      required
-                      rows={5}
-                      value={formData.message}
-                      onChange={(e) =>
-                        setFormData({ ...formData, message: e.target.value })
-                      }
-                      className="
-                        w-full px-4 py-3 rounded-lg
-                        bg-white dark:bg-gray-950
-                        border border-gray-300 dark:border-gray-700
-                        text-gray-900 dark:text-gray-100
-                        focus:ring-2 focus:ring-brand-500 focus:outline-none
-                        transition-colors
-                      "
-                      placeholder="How can we help you?"
+                    <input 
+                      type="text" 
+                      required 
+                      value={formData.subject} 
+                      onChange={(e) => setFormData({...formData, subject: e.target.value})} 
+                      className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-brand-500 text-sm" 
+                      placeholder={t.contact?.pSubject || "Course or Platform Inquiry"} 
                     />
                   </div>
-
-                  <button
-                    type="submit"
-                    className="
-                      w-full bg-brand-600 text-white py-4 rounded-lg font-semibold
-                      hover:bg-brand-700 transition-all
-                      flex items-center justify-center
-                      active:scale-95
-                    "
-                  >
-                    <Send className="h-5 w-5 mr-2" />
-                    Send Message
+                  <div>
+                    <label className="block text-xs font-bold text-gray-400 uppercase mb-2">
+                      {t.contact?.fMessage || "Message"}
+                    </label>
+                    <textarea 
+                      required 
+                      rows={4} 
+                      value={formData.message} 
+                      onChange={(e) => setFormData({...formData, message: e.target.value})} 
+                      className="w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-none focus:ring-2 focus:ring-brand-500 text-sm" 
+                      placeholder={t.contact?.pMessage || "Tell us how we can help you..."} 
+                    />
+                  </div>
+                  <button type="submit" className="w-full bg-brand-600 text-white py-4 rounded-xl font-bold shadow-lg shadow-brand-500/30 hover:bg-brand-700 transition-all flex items-center justify-center gap-2">
+                    <Send className="h-4 w-4 me-2" /> 
+                    {t.contact?.btnSend || "Send Message"}
                   </button>
                 </form>
               </div>
             </div>
-
           </div>
         </div>
       </section>

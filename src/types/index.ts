@@ -2,13 +2,14 @@ export interface Course {
   id: string;
   title: string;
   description: string;
-  price: number;
+  price: number; // This is the Base/Basic price
+  image_url: string;
   duration: string;
   level: string;
-  image_url: string;
+  status: string;
   features: string[];
-  status: 'available' | 'coming_soon';
-  created_at: string;
+  potentialEarnings?: string;
+  selectedTier?: 'Basic' | 'Gold' | 'Premium'; // New field
 }
 
 export interface Teacher {
