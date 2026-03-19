@@ -32,7 +32,8 @@ export default function Footer({ onNavigate }: FooterProps) {
             <img 
               src={mono} 
               alt="Uniserve University" 
-              className="h-16 w-24 object-cover rounded-full border-2 border-brand-500 p-1 mb-6 shadow-xl" 
+              // ✅ ADDED: bg-white and a dark mode glow so it stays visible
+              className="h-16 w-24 object-cover rounded-full border-2 border-brand-500 p-1 mb-6 shadow-xl bg-white dark:shadow-[0_0_15px_rgba(255,255,255,0.15)]" 
             />
             {/* ✅ Added translation with safe fallback */}
             <h1 className="text-xl font-black text-brand-500 mb-4 tracking-tighter italic uppercase">
